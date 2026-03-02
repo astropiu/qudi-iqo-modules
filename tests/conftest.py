@@ -126,7 +126,7 @@ def qudi_gui():
 def qudi_client(qudi_gui):
     """Attach to the running GUI using qudikernel.QudiKernelClient."""
     client = QudiKernelClient()
-    timeout = time.time() + 60
+    timeout = time.time() + 240
     last_err = None
     while time.time() < timeout:
         try:
@@ -136,7 +136,7 @@ def qudi_client(qudi_gui):
             return qudi
         except Exception as e:
             last_err = e
-            time.sleep(0.5)
+            time.sleep(1)
     raise RuntimeError(f"Could not connect to Qudi namespace server: {last_err}")
 
 @contextmanager

@@ -187,7 +187,7 @@ def test_start_odmr_scan(module):
                 assert int(value) in range(*odmr_range[channel])
     #print(f'elspased sweeps {module._elapsed_sweeps}') 
 
-def test_do_fit(module):
+def test_do_fit(module,qtbot):
     """
     Tests if the fitting of the generated signal data works by checking the values of the fit parameters are not nan.
 
@@ -197,6 +197,11 @@ def test_do_fit(module):
         Fixture for instance of ODMR logic module
     """
     module.do_fit(FIT_MODEL, CHANNELS[0], 0)
+    def ready():
+        fr = module.fit_results.get(CHANNELS[0])
+        return fr is not None and fr[0][1] is not None
+
+    qtbot.waitUntil(ready, timeout=10_000)  # ms
     fit_results  = module.fit_results[CHANNELS[0]][0][1]
     dict_fit_result = module.fit_container.dict_result(fit_results)
     for key,values in dict_fit_result.items():

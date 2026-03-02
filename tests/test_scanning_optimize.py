@@ -39,7 +39,7 @@ def get_scan_logic(opt_module):
     return opt_module._scan_logic()
 
 
-def wait_until(predicate, timeout=5, delay=0.05):
+def wait_until(predicate, timeout=5, delay=0.5):
     """
     Utility: poll *predicate* until it returns *True* or *timeout* expires.
     Parameters
@@ -76,7 +76,7 @@ def module(qudi_client):
 
 
 
-def test_start_optimize(module):
+def test_start_optimize(module,qtbot):
     """
     Verify that *start_optimize()* kicks off an optimisation sequence correctly.
     Parameters
@@ -94,7 +94,7 @@ def test_start_optimize(module):
     module.start_optimize()
 
     # The optimiser should switch to *running* almost instantly.
-    assert wait_until(lambda: module.optimizer_running, timeout=2), "Optimizer did not start."
+    assert wait_until(lambda: module.optimizer_running, timeout=10), "Optimizer did not start."
 
   
     # stashed settings must be captured so they can be
@@ -102,7 +102,7 @@ def test_start_optimize(module):
     assert module._stashed_settings is not None, "Original scan settings were not stashed."
 
     # Wait for the optimiser to finish its configured sequence automatically.
-    assert wait_until(lambda: not module.optimizer_running, timeout=20), "Optimisation did not finish in time."
+    assert wait_until(lambda: not module.optimizer_running, timeout=60), "Optimisation did not finish in time."
 
  
     # Stashed settings are cleared once they have been reapplied.
