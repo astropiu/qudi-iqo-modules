@@ -21,7 +21,7 @@ If not, see <https://www.gnu.org/licenses/>.
 """
 import time
 
-'''
+
 def test_reset_module(gui_modules, hardware_modules, qudi_client, qtbot):
     """
     This tests clearing all the logic, hardware module status variables and reloads the GUI modules
@@ -91,7 +91,7 @@ def test_reset_module(gui_modules, hardware_modules, qudi_client, qtbot):
         gui_managed_module = module_manager.modules[gui_module]
         assert gui_managed_module.is_active
         qtbot.waitUntil(lambda: module_manager.modules[gui_module].is_active, timeout=60_000)
-        time.sleep(55)
+        time.sleep(5)
         module_manager.deactivate_module(gui_module)
         print(f'deactivated {gui_module} \n' )
         for required_logic_module in required_logic_modules:
@@ -109,4 +109,3 @@ def test_reset_module(gui_modules, hardware_modules, qudi_client, qtbot):
             print(f'deactivated {required_hardware_module} \n' )
 
 
-'''
