@@ -196,8 +196,9 @@ def test_do_fit(module,qtbot):
     module : fixture
         Fixture for instance of ODMR logic module
     """
-    time.sleep(10)
     module.do_fit(FIT_MODEL, CHANNELS[0], 0)
+    time.sleep(10)
+
     fit_results  = module.fit_results[CHANNELS[0]][0][1]
     dict_fit_result = module.fit_container.dict_result(fit_results)
     for key,values in dict_fit_result.items():
