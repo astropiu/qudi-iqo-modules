@@ -65,23 +65,6 @@ jobs:
       shell: bash
 
 
-    - name: Test with pytest
-      shell: pwsh
-      run: |
-        pytest -vv -s --tb=long --showlocals -ra
-        $pytestExitCode = $LASTEXITCODE
-
-        if ($pytestExitCode -ne 0) {
-          Write-Host ""
-          Write-Host "::group::Qudi log"
-          Get-Content "C:\path\to\qudi.log" -Tail 500
-          Write-Host "::endgroup::"
-        }
-
-        exit $pytestExitCode
-      env:
-        QT_API: pyside6
-
 
     - name: Test with pytest
       shell: pwsh
