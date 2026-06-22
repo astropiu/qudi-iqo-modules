@@ -87,25 +87,14 @@ def test_reset_module(gui_modules, hardware_modules, qudi_client, qtbot):
             module_manager.clear_module_app_data(required_logic_module)
      
         module_manager.activate_module(gui_module)
-        print(f'activated {gui_module} \n' )
         gui_managed_module = module_manager.modules[gui_module]
         assert gui_managed_module.is_active
         qtbot.waitUntil(lambda: module_manager.modules[gui_module].is_active, timeout=60_000)
         time.sleep(5)
         module_manager.deactivate_module(gui_module)
-        print(f'deactivated {gui_module} \n' )
         for required_logic_module in required_logic_modules:
-            print(f'deactivating {required_logic_module} \n' )
-
             module_manager.deactivate_module(required_logic_module)
-            print(f'deactivated {required_logic_module} \n' )
-
 
         for required_hardware_module in required_hardware_modules:
-            print(f'deactivating {required_hardware_module} \n' )
-
             module_manager.deactivate_module(required_hardware_module)
-
-            print(f'deactivated {required_hardware_module} \n' )
-
 
