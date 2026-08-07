@@ -32,6 +32,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         python-version: ${{ fromJson(needs.make-matrix.outputs.matrix) }}
 
@@ -47,7 +48,7 @@ jobs:
     - name: Checkout qudi core
       run: |
         cd ..
-        git clone -b pyside6-dev --single-branch https://github.com/Ulm-IQO/qudi-core.git
+        git clone -b pyside6-dev --single-branch https://github.com/astropiu/qudi-core.git
         cd qudi-core
         python -m pip install --upgrade pip
         pip install -e ".[dev-test]"
@@ -56,7 +57,35 @@ jobs:
     - name: Install dependencies iqo modules
       run: |
         pip install -e ".[dev-test]"
-    - name: Test with pytest
-      run: |
-        pytest -s
 
+    - name: Force PySide6 (remove PySide2 if present)
+      run: |
+        python -m pip uninstall -y PySide2 shiboken2 || exit 0
+        python -m pip install --upgrade pip
+      shell: bash
+
+
+
+    - name: Test with pytest
+      shell: pwsh
+      run: |
+        $qudiLogPath = python tests/get_log_file_path.py
+        Write-Host "Qudi log path: $qudiLogPath"
+
+        pytest -vv -s --tb=long --showlocals -ra
+        $pytestExitCode = $LASTEXITCODE
+
+        if ($pytestExitCode -ne 0) {
+          Write-Host ""
+          Write-Host "::group::Qudi log"
+
+          if (Test-Path $qudiLogPath) {
+            Get-Content $qudiLogPath -Tail 500
+          } else {
+            Write-Host "Qudi log file not found at: $qudiLogPath"
+          }
+
+          Write-Host "::endgroup::"
+        }
+
+        exit $pytestExitCode
